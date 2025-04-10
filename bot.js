@@ -60,8 +60,8 @@ async function fetchWallpaper() {
 bot.once('ready', () => {
   console.log(`✅ Soul Auora is ready as ${bot.user.tag}`);
 
-  // Schedule daily quote at 5:00 AM (Asia/Kolkata)
-  cron.schedule('0 5 * * *', async () => {
+  // Schedule quote every hour
+  cron.schedule('0 * * * *', async () => {
     const channel = bot.channels.cache.get(QUOTE_CHANNEL_ID);
     if (channel) {
       const quote = await fetchQuote();
