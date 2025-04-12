@@ -77,9 +77,12 @@ client.on('voiceStateUpdate', async (oldState, newState) => {
       connection.subscribe(player);
       console.log('Connected to voice channel and subscribed to audio player');
 
-      // Play the welcome sound
-      player.play(resource);
-      console.log('Started playing welcome sound');
+      // Add a 1-second delay before playing to ensure connection is stable
+      setTimeout(() => {
+        // Play the welcome sound
+        player.play(resource);
+        console.log('Started playing welcome sound');
+      }, 1000);
 
       // Handle when the audio finishes playing
       const onIdle = () => {
