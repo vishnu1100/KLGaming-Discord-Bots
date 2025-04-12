@@ -72,11 +72,19 @@ client.on('voiceStateUpdate', async (oldState, newState) => {
       // Handle when the audio finishes playing
       const onIdle = () => {
         console.log('Audio playback finished');
-        setTimeout(() => {
-          connection.destroy();
-          console.log('Connection destroyed after playback');
-        }, 500); // Add a small delay before destroying the connection
         player.removeListener(AudioPlayerStatus.Idle, onIdle);
+        player.stop();
+        
+        try {
+          setTimeout(() => {
+            if (connection.state.status !== 'destroyed') {
+              connection.destroy();
+              console.log('Connection destroyed after playback');
+            }
+          }, 500); // Add a small delay before destroying the connection
+        } catch (error) {
+          console.error('Error during connection cleanup:', error);
+        }
       };
 
       player.once(AudioPlayerStatus.Idle, onIdle);
