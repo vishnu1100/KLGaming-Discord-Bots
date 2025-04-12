@@ -1,6 +1,7 @@
 const { Client, GatewayIntentBits, VoiceState } = require('discord.js');
-const { joinVoiceChannel, createAudioPlayer, createAudioResource, AudioPlayerStatus } = require('@discordjs/voice');
+const { joinVoiceChannel, createAudioPlayer, createAudioResource, AudioPlayerStatus, NoSubscriberBehavior } = require('@discordjs/voice');
 const path = require('path');
+const { createReadStream } = require('fs');
 
 // Discord bot token - store this in an environment variable in production
 const DISCORD_TOKEN = 'MTM0NzI3MDkyMDcxNjQxOTIwMg.GJrvjq.uP5ilRdEFnGPDkOmJaRV6dFs1WF2c3erT_5t0M';
@@ -22,8 +23,12 @@ const client = new Client({
   ],
 });
 
-// Create an audio player
-const player = createAudioPlayer();
+// Create an audio player with proper configuration
+const player = createAudioPlayer({
+  behaviors: {
+    noSubscriber: NoSubscriberBehavior.Play
+  }
+});
 
 // Log audio player state changes
 player.on('stateChange', (oldState, newState) => {
@@ -37,8 +42,8 @@ client.once('ready', () => {
 
 // Handle voice state updates (when users join/leave voice channels)
 client.on('voiceStateUpdate', async (oldState, newState) => {
-  // Only handle when a user joins a voice channel
-  if (!oldState.channelId && newState.channelId) {
+  // Handle when a user joins a voice channel or switches between channels
+  if ((!oldState.channelId && newState.channelId) || (oldState.channelId !== newState.channelId && newState.channelId)) {
     try {
       // Create a connection to the voice channel
       const connection = joinVoiceChannel({
@@ -55,8 +60,15 @@ client.on('voiceStateUpdate', async (oldState, newState) => {
 
       console.log('Creating audio resource from welcome.mp3...');
       const resource = createAudioResource(path.join(__dirname, 'welcome.mp3'), {
-        inlineVolume: true
+        inlineVolume: true,
+        inputType: 'arbitrary'
       });
+
+      // Add error handling for the resource
+      if (!resource) {
+        console.error('Failed to create audio resource');
+        return;
+      }
 
       // Set volume to 100%
       resource.volume.setVolume(1.0);
