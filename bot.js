@@ -131,4 +131,4 @@ client.on('error', error => {
 
 // Login with the bot token
 // Login with Soul Auora's token
-client.login('MTM0NzI3MDkyMDcxNjQxOTIwMg.GJrvjq.uP5ilRdEFnGPDkOmJaRV6dFs1WF2c3erT_5t0M');
+client.login('');
