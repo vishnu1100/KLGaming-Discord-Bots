@@ -4,7 +4,7 @@ const path = require('path');
 const { createReadStream } = require('fs');
 
 // Discord bot token - store this in an environment variable in production
-const DISCORD_TOKEN = 'MTM0NzI3MDkyMDcxNjQxOTIwMg.GJrvjq.uP5ilRdEFnGPDkOmJaRV6dFs1WF2c3erT_5t0M';
+const DISCORD_TOKEN = '';
 
 // Audio player states for logging
 const AUDIO_STATES = {
